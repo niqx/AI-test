@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Два пончика и чашка кофе</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brown-dark:   #3b1f0e;
+      --brown-mid:    #6b3a2a;
+      --brown-light:  #a0522d;
+      --caramel:      #c8813a;
+      --cream:        #f5ead8;
+      --cream-light:  #fdf6ec;
+      --white:        #ffffff;
+      --text-dark:    #2c1a0e;
+      --text-mid:     #5a3825;
+      --shadow:       rgba(59,31,14,.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--cream-light);
+      color: var(--text-dark);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(59,31,14,.95);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .9rem 2rem;
+      box-shadow: 0 2px 16px var(--shadow);
+      transition: background .3s;
+    }
+    .nav-logo {
+      font-size: 1.25rem; font-weight: bold; color: var(--caramel);
+      letter-spacing: .04em; text-decoration: none;
+    }
+    .nav-logo span { color: var(--cream); }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a {
+      color: var(--cream); text-decoration: none; font-size: .95rem;
+      letter-spacing: .03em; position: relative; padding-bottom: 3px;
+      transition: color .25s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 2px; background: var(--caramel);
+      transition: width .3s;
+    }
+    .nav-links a:hover { color: var(--caramel); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* hamburger */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span {
+      display: block; width: 26px; height: 2px;
+      background: var(--cream); border-radius: 2px; transition: .3s;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      background:
+        linear-gradient(160deg, rgba(59,31,14,.72) 0%, rgba(107,58,42,.55) 60%, transparent 100%),
+        url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=1600&q=80') center/cover no-repeat;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 6rem 1.5rem 3rem;
+    }
+    .hero-inner { max-width: 700px; }
+    .hero-badge {
+      display: inline-block; background: var(--caramel);
+      color: var(--white); font-size: .8rem; letter-spacing: .12em;
+      text-transform: uppercase; padding: .35rem 1rem; border-radius: 50px;
+      margin-bottom: 1.4rem;
+    }
+    .hero-title {
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      color: var(--white); line-height: 1.15;
+      text-shadow: 0 2px 18px rgba(0,0,0,.45);
+      margin-bottom: 1.2rem;
+    }
+    .hero-title em { color: var(--caramel); font-style: normal; }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--cream); margin-bottom: 2.4rem; line-height: 1.6;
+    }
+    .btn {
+      display: inline-block; padding: .85rem 2.2rem;
+      border-radius: 50px; font-size: 1rem; font-weight: bold;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: transform .2s, box-shadow .2s, background .25s;
+    }
+    .btn-primary {
+      background: var(--caramel); color: var(--white);
+      box-shadow: 0 4px 20px rgba(200,129,58,.45);
+    }
+    .btn-primary:hover {
+      background: var(--brown-light);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(200,129,58,.55);
+    }
+    .btn-outline {
+      background: transparent; color: var(--white);
+      border: 2px solid var(--cream); margin-left: 1rem;
+    }
+    .btn-outline:hover {
+      background: var(--cream); color: var(--brown-dark);
+      transform: translateY(-3px);
+    }
+    .hero-scroll {
+      margin-top: 3.5rem; color: var(--cream); font-size: .85rem;
+      opacity: .7; animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(8px); }
+    }
+
+    /* ── SECTION COMMON ── */
+    section { padding: 5.5rem 1.5rem; }
+    .section-label {
+      display: block; text-align: center; font-size: .78rem;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--caramel); margin-bottom: .6rem;
+    }
+    .section-title {
+      text-align: center; font-size: clamp(1.8rem, 4vw, 2.6rem);
+      color: var(--brown-dark); margin-bottom: 1rem;
+    }
+    .section-divider {
+      width: 60px; height: 3px; background: var(--caramel);
+      margin: 0 auto 2.8rem; border-radius: 2px;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--cream); }
+    .about-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem;
+      align-items: center;
+    }
+    .about-img-wrap {
+      position: relative; border-radius: 20px; overflow: hidden;
+      box-shadow: 0 12px 40px var(--shadow);
+    }
+    .about-img-wrap img {
+      width: 100%; display: block;
+      transition: transform .5s;
+    }
+    .about-img-wrap:hover img { transform: scale(1.04); }
+    .about-badge-img {
+      position: absolute; bottom: 1.2rem; right: 1.2rem;
+      background: var(--caramel); color: var(--white);
+      border-radius: 50%; width: 90px; height: 90px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-size: .75rem; text-align: center; line-height: 1.3;
+      font-weight: bold; box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    }
+    .about-badge-img strong { font-size: 1.4rem; }
+    .about-text p {
+      color: var(--text-mid); line-height: 1.8; margin-bottom: 1.1rem;
+      font-size: 1.05rem;
+    }
+    .about-stats {
+      display: flex; gap: 2rem; margin-top: 2rem;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 2rem; font-weight: bold; color: var(--caramel);
+      display: block;
+    }
+    .stat-label { font-size: .85rem; color: var(--text-mid); }
+
+    /* ── MENU ── */
+    #menu { background: var(--cream-light); }
+    .menu-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+    }
+    .menu-card {
+      background: var(--white); border-radius: 18px;
+      overflow: hidden; box-shadow: 0 6px 24px var(--shadow);
+      transition: transform .3s, box-shadow .3s;
+      cursor: default;
+    }
+    .menu-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 40px rgba(59,31,14,.22);
+    }
+    .menu-card-img {
+      width: 100%; height: 200px; object-fit: cover;
+      transition: transform .4s;
+    }
+    .menu-card:hover .menu-card-img { transform: scale(1.06); }
+    .menu-card-img-wrap { overflow: hidden; }
+    .menu-card-body { padding: 1.4rem 1.5rem 1.6rem; }
+    .menu-card-tag {
+      font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--caramel); margin-bottom: .4rem; display: block;
+    }
+    .menu-card-name {
+      font-size: 1.2rem; color: var(--brown-dark);
+      margin-bottom: .5rem;
+    }
+    .menu-card-desc {
+      font-size: .9rem; color: var(--text-mid); line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .menu-card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .menu-price {
+      font-size: 1.3rem; font-weight: bold; color: var(--caramel);
+    }
+    .menu-btn {
+      background: var(--cream); color: var(--brown-mid);
+      border: none; border-radius: 50px; padding: .4rem 1rem;
+      font-size: .85rem; cursor: pointer; transition: background .25s, color .25s;
+    }
+    .menu-btn:hover { background: var(--caramel); color: var(--white); }
+
+    /* ── TESTIMONIALS ── */
+    #testimonials { background: var(--brown-dark); }
+    #testimonials .section-title { color: var(--cream); }
+    #testimonials .section-label { color: var(--caramel); }
+    .testi-grid {
+      max-width: 1000px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+    }
+    .testi-card {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px; padding: 1.8rem;
+      transition: background .3s;
+    }
+    .testi-card:hover { background: rgba(255,255,255,.12); }
+    .testi-stars { color: var(--caramel); font-size: 1.1rem; margin-bottom: .8rem; }
+    .testi-text { color: var(--cream); line-height: 1.7; font-size: .97rem; margin-bottom: 1.2rem; }
+    .testi-author { display: flex; align-items: center; gap: .8rem; }
+    .testi-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--caramel); display: flex; align-items: center;
+      justify-content: center; font-size: 1.1rem; color: var(--white);
+    }
+    .testi-name { color: var(--caramel); font-weight: bold; font-size: .9rem; }
+    .testi-role { color: rgba(245,234,216,.55); font-size: .8rem; }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--cream); }
+    .contact-grid {
+      max-width: 1000px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+    }
+    .contact-info h3 {
+      font-size: 1.4rem; color: var(--brown-dark); margin-bottom: 1.4rem;
+    }
+    .contact-item {
+      display: flex; gap: 1rem; margin-bottom: 1.4rem; align-items: flex-start;
+    }
+    .contact-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--caramel); color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .contact-item-text strong {
+      display: block; color: var(--brown-dark); margin-bottom: .2rem;
+    }
+    .contact-item-text span { color: var(--text-mid); font-size: .95rem; line-height: 1.6; }
+    .hours-table { width: 100%; border-collapse: collapse; margin-top: .5rem; }
+    .hours-table td { padding: .3rem 0; color: var(--text-mid); font-size: .92rem; }
+    .hours-table td:last-child { text-align: right; color: var(--brown-mid); font-weight: bold; }
+
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-form h3 {
+      font-size: 1.4rem; color: var(--brown-dark); margin-bottom: .4rem;
+    }
+    .form-group { display: flex; flex-direction: column; gap: .4rem; }
+    .form-group label { font-size: .88rem; color: var(--text-mid); }
+    .form-group input,
+    .form-group textarea {
+      padding: .75rem 1rem; border: 1.5px solid #d9c4a8;
+      border-radius: 10px; font-size: .95rem; font-family: inherit;
+      background: var(--cream-light); color: var(--text-dark);
+      transition: border-color .25s, box-shadow .25s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--caramel);
+      box-shadow: 0 0 0 3px rgba(200,129,58,.15);
+    }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+    .btn-submit {
+      background: var(--caramel); color: var(--white);
+      border: none; border-radius: 50px; padding: .85rem;
+      font-size: 1rem; font-weight: bold; cursor: pointer;
+      transition: background .25s, transform .2s;
+    }
+    .btn-submit:hover { background: var(--brown-mid); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--brown-dark); color: var(--cream);
+      text-align: center; padding: 2.5rem 1.5rem;
+    }
+    .footer-logo { font-size: 1.4rem; color: var(--caramel); margin-bottom: .6rem; }
+    .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin: 1rem 0; }
+    .footer-links a { color: var(--cream); text-decoration: none; font-size: .9rem; opacity: .7; transition: opacity .2s; }
+    .footer-links a:hover { opacity: 1; }
+    .footer-copy { font-size: .82rem; opacity: .5; margin-top: .8rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none; flex-direction: column; gap: 1rem;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: var(--brown-dark); padding: 1.5rem 2rem;
+      }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      .about-grid,
+      .contact-grid { grid-template-columns: 1fr; }
+      .about-stats { justify-content: center; }
+      .btn-outline { margin-left: 0; margin-top: .8rem; }
+      .hero-inner .btn { display: block; width: fit-content; margin: .4rem auto; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="#hero">🍩 <span>Два пончика</span> & кофе</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">О нас</a></li>
+    <li><a href="#menu">Меню</a></li>
+    <li><a href="#testimonials">Отзывы</a></li>
+    <li><a href="#contact">Контакты</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <span class="hero-badge">☕ Авторская кофейня · Москва</span>
+    <h1 class="hero-title">
+      Два пончика<br>и <em>чашка кофе</em>
+    </h1>
+    <p class="hero-sub">
+      Место, где каждое утро начинается с тепла, аромата<br>
+      и маленького сладкого удовольствия.
+    </p>
+    <a href="#menu" class="btn btn-primary">Смотреть меню</a>
+    <a href="#contact" class="btn btn-outline">Найти нас</a>
+    <div class="hero-scroll">▼ прокрутите вниз</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <span class="section-label">Наша история</span>
+  <h2 class="section-title">О компании</h2>
+  <div class="section-divider"></div>
+  <div class="about-grid">
+    <div class="about-img-wrap">
+      <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80" alt="Интерьер кофейни"/>
+      <div class="about-badge-img"><strong>2018</strong>год<br>основания</div>
+    </div>
+    <div class="about-text">
+      <p>
+        Всё началось с простой идеи: создать уютное место, где люди могут замедлиться,
+        насладиться по-настоящему хорошим кофе и свежеиспечёнными пончиками.
+      </p>
+      <p>
+        Наши пончики готовятся каждое утро вручную — без консервантов и лишних добавок.
+        Кофе мы обжариваем сами на небольшой ростерне, подбирая зёрна с лучших плантаций
+        Эфиопии, Колумбии и Бразилии.
+      </p>
+      <p>
+        Сегодня «Два пончика и чашка кофе» — это не просто кофейня, это сообщество
+        людей, которые ценят качество, уют и настоящий вкус.
+      </p>
+      <div class="about-stats">
+        <div class="stat"><span class="stat-num">6+</span><span class="stat-label">лет работы</span></div>
+        <div class="stat"><span class="stat-num">40+</span><span class="stat-label">сортов кофе</span></div>
+        <div class="stat"><span class="stat-num">12</span><span class="stat-label">видов пончиков</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <span class="section-label">Фирменные напитки</span>
+  <h2 class="section-title">Наше меню</h2>
+  <div class="section-divider"></div>
+  <div class="menu-grid">
+
+    <div class="menu-card">
+      <div class="menu-card-img-wrap">
+        <img class="menu-card-img"
+          src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=600&q=80"
+          alt="Карамельный латте"/>
+      </div>
+      <div class="menu-card-body">
+        <span class="menu-card-tag">☕ Горячий</span>
+        <h3 class="menu-card-name">Карамельный латте</h3>
+        <p class="menu-card-desc">Нежный эспрессо с домашней карамелью и бархатистым молоком. Идеален для утра.</p>
+        <div class="menu-card-footer">
+          <span class="menu-price">290 ₽</span>
+          <button class="menu-btn">В меню →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-card-img-wrap">
+        <img class="menu-card-img"
+          src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&q=80"
+          alt="Холодный матча"/>
+      </div>
+      <div class="menu-card-body">
+        <span class="menu-card-tag">🧊 Холодный</span>
+        <h3 class="menu-card-name">Матча-латте со льдом</h3>
+        <p class="menu-card-desc">Церемониальная матча, кокосовое молоко и лёд — освежающий баланс вкусов.</p>
+        <div class="menu-card-footer">
+          <span class="menu-price">320 ₽</span>
+          <button class="menu-btn">В меню →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-card-img-wrap">
+        <img class="menu-card-img"
+          src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=600&q=80"
+          alt="Флэт уайт"/>
+      </div>
+      <div class="menu-card-body">
+        <span class="menu-card-tag">☕ Горячий</span>
+        <h3 class="menu-card-name">Авторский флэт уайт</h3>
+        <p class="menu-card-desc">Двойной рестретто и микропена из цельного молока — концентрат удовольствия.</p>
+        <div class="menu-card-footer">
+          <span class="menu-price">270 ₽</span>
+          <button class="menu-btn">В меню →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-card-img-wrap">
+        <img class="menu-card-img"
+          src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&q=80"
+          alt="Пончик с кофе"/>
+      </div>
+      <div class="menu-card-body">
+        <span class="menu-card-tag">🍩 Фирменное</span>
+        <h3 class="menu-card-name">Сет «Два пончика»</h3>
+        <p class="menu-card-desc">Два свежих пончика на выбор + любой напиток. Лучшее начало дня по специальной цене.</p>
+        <div class="menu-card-footer">
+          <span class="menu-price">390 ₽</span>
+          <button class="menu-btn">В меню →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <span class="section-label">Что говорят гости</span>
+  <h2 class="section-title">Отзывы</h2>
+  <div class="section-divider"></div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">«Лучший карамельный латте в городе! Захожу каждое утро по дороге на работу — уже ритуал. Пончики всегда свежие и невероятно вкусные.»</p>
+      <div class="testi-author">
+        <div class="testi-avatar">А</div>
+        <div>
+          <div class="testi-name">Анна К.</div>
+          <div class="testi-role">Постоянный гость</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">«Уютная атмосфера, приветливый персонал и кофе, который хочется пить снова и снова. Сет "Два пончика" — просто находка!»</p>
+      <div class="testi-author">
+        <div class="testi-avatar">М</div>
+        <div>
+          <div class="testi-name">Михаил Р.</div>
+          <div class="testi-role">Блогер о еде</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">«Наконец-то нашла место, где матча-латте приготовлен правильно. Здесь чувствуется любовь к каждой детали — от зерна до подачи.»</p>
+      <div class="testi-author">
+        <div class="testi-avatar">С</div>
+        <div>
+          <div class="testi-name">София Л.</div>
+          <div class="testi-role">Дизайнер</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <span class="section-label">Мы рядом</span>
+  <h2 class="section-title">Контакты</h2>
+  <div class="section-divider"></div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <h3>Как нас найти</h3>
+
+      <div class="contact-item">
+        <div class="contact-icon">📍</div>
+        <div class="contact-item-text">
+          <strong>Адрес</strong>
+          <span>ул. Арбат, 12, Москва<br>м. Арбатская, 3 мин. пешком</span>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div class="contact-item-text">
+          <strong>Телефон</strong>
+          <span>+7 (495) 123-45-67</span>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="contact-icon">✉️</div>
+        <div class="contact-item-text">
+          <strong>Email</strong>
+          <span>hello@2donuts.ru</span>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="contact-icon">🕐</div>
+        <div class="contact-item-text">
+          <strong>Часы работы</strong>
+          <table class="hours-table">
+            <tr><td>Пн – Пт</td><td>07:00 – 22:00</td></tr>
+            <tr><td>Суббота</td><td>08:00 – 23:00</td></tr>
+            <tr><td>Воскресенье</td><td>09:00 – 21:00</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <h3>Напишите нам</h3>
+      <div class="form-group">
+        <label>Ваше имя</label>
+        <input type="text" placeholder="Иван Иванов"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="ivan@example.com"/>
+      </div>
+      <div class="form-group">
+        <label>Сообщение</label>
+        <textarea placeholder="Хочу забронировать столик или задать вопрос..."></textarea>
+      </div>
+      <button class="btn-submit">Отправить сообщение ☕</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">🍩 Два пончика и чашка кофе</div>
+  <p style="opacity:.6;font-size:.9rem;">Москва, ул. Арбат, 12</p>
+  <div class="footer-links">
+    <a href="#hero">Главная</a>
+    <a href="#about">О нас</a>
+    <a href="#menu">Меню</a>
+    <a href="#contact">Контакты</a>
+  </div>
+  <p class="footer-copy">© 2024 Два пончика и чашка кофе. Все права защищены.</p>
+</footer>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+  // close menu on link click
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('navLinks').classList.remove('open');
+    });
+  });
+</script>
+</body>
+</html>
