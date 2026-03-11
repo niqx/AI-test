@@ -3,7 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Два пончика и чашка кофе</title>
+  <title>Два пончика и чашка кофе — Авторская кофейня в Москве</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Авторская кофейня «Два пончика и чашка кофе» на Арбате. Свежие пончики ручной работы, кофе собственной обжарки. Москва, ул. Арбат, 12."/>
+  <meta name="keywords" content="кофейня, пончики, кофе, Арбат, Москва, латте, матча, авторский кофе"/>
+  <meta name="author" content="Два пончика и чашка кофе"/>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Два пончика и чашка кофе — Авторская кофейня в Москве"/>
+  <meta property="og:description" content="Место, где каждое утро начинается с тепла, аромата и маленького сладкого удовольствия. Арбат, Москва."/>
+  <meta property="og:image" content="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=1200&q=80"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:locale" content="ru_RU"/>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Два пончика и чашка кофе"/>
+  <meta name="twitter:description" content="Авторская кофейня на Арбате. Пончики ручной работы и кофе собственной обжарки."/>
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=1200&q=80"/>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -36,12 +55,18 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: .9rem 2rem;
       box-shadow: 0 2px 16px var(--shadow);
-      transition: background .3s;
+      transition: padding .35s, background .3s;
+    }
+    nav.shrink {
+      padding: .5rem 2rem;
+      background: rgba(59,31,14,1);
     }
     .nav-logo {
       font-size: 1.25rem; font-weight: bold; color: var(--caramel);
       letter-spacing: .04em; text-decoration: none;
+      transition: font-size .35s;
     }
+    nav.shrink .nav-logo { font-size: 1.05rem; }
     .nav-logo span { color: var(--cream); }
     .nav-links { display: flex; gap: 1.8rem; list-style: none; }
     .nav-links a {
@@ -54,15 +79,25 @@
       width: 0; height: 2px; background: var(--caramel);
       transition: width .3s;
     }
-    .nav-links a:hover { color: var(--caramel); }
-    .nav-links a:hover::after { width: 100%; }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--caramel); }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
 
     /* hamburger */
-    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px;
+    }
     .hamburger span {
       display: block; width: 26px; height: 2px;
-      background: var(--cream); border-radius: 2px; transition: .3s;
+      background: var(--cream); border-radius: 2px;
+      transition: transform .35s, opacity .35s;
+      transform-origin: center;
     }
+    .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     /* ── HERO ── */
     #hero {
@@ -79,18 +114,22 @@
       color: var(--white); font-size: .8rem; letter-spacing: .12em;
       text-transform: uppercase; padding: .35rem 1rem; border-radius: 50px;
       margin-bottom: 1.4rem;
+      animation: fadeInDown .8s ease both;
     }
     .hero-title {
       font-size: clamp(2.4rem, 6vw, 4.2rem);
       color: var(--white); line-height: 1.15;
       text-shadow: 0 2px 18px rgba(0,0,0,.45);
       margin-bottom: 1.2rem;
+      animation: fadeInDown .8s .15s ease both;
     }
     .hero-title em { color: var(--caramel); font-style: normal; }
     .hero-sub {
       font-size: clamp(1rem, 2.5vw, 1.25rem);
       color: var(--cream); margin-bottom: 2.4rem; line-height: 1.6;
+      animation: fadeInDown .8s .3s ease both;
     }
+    .hero-btns { animation: fadeInDown .8s .45s ease both; }
     .btn {
       display: inline-block; padding: .85rem 2.2rem;
       border-radius: 50px; font-size: 1rem; font-weight: bold;
@@ -122,6 +161,10 @@
       0%,100% { transform: translateY(0); }
       50%      { transform: translateY(8px); }
     }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
     /* ── SECTION COMMON ── */
     section { padding: 5.5rem 1.5rem; }
@@ -138,6 +181,39 @@
       width: 60px; height: 3px; background: var(--caramel);
       margin: 0 auto 2.8rem; border-radius: 2px;
     }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+    .reveal-delay-4 { transition-delay: .4s; }
 
     /* ── ABOUT ── */
     #about { background: var(--cream); }
@@ -281,6 +357,16 @@
     .hours-table td { padding: .3rem 0; color: var(--text-mid); font-size: .92rem; }
     .hours-table td:last-child { text-align: right; color: var(--brown-mid); font-weight: bold; }
 
+    /* Map placeholder */
+    .map-wrap {
+      margin-top: 1.5rem; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 6px 20px var(--shadow);
+    }
+    .map-wrap iframe {
+      width: 100%; height: 200px; border: none; display: block;
+      filter: sepia(20%) contrast(95%);
+    }
+
     .contact-form { display: flex; flex-direction: column; gap: 1rem; }
     .contact-form h3 {
       font-size: 1.4rem; color: var(--brown-dark); margin-bottom: .4rem;
@@ -300,6 +386,15 @@
       border-color: var(--caramel);
       box-shadow: 0 0 0 3px rgba(200,129,58,.15);
     }
+    .form-group input.error,
+    .form-group textarea.error {
+      border-color: #e05a5a;
+      box-shadow: 0 0 0 3px rgba(224,90,90,.12);
+    }
+    .form-group .error-msg {
+      font-size: .8rem; color: #c0392b; display: none;
+    }
+    .form-group .error-msg.show { display: block; }
     .form-group textarea { resize: vertical; min-height: 110px; }
     .btn-submit {
       background: var(--caramel); color: var(--white);
@@ -308,6 +403,16 @@
       transition: background .25s, transform .2s;
     }
     .btn-submit:hover { background: var(--brown-mid); transform: translateY(-2px); }
+    .btn-submit:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+    /* Success message */
+    .form-success {
+      display: none; background: #e8f5e9; border: 1.5px solid #a5d6a7;
+      border-radius: 12px; padding: 1.2rem 1.5rem;
+      color: #2e7d32; font-size: .97rem; text-align: center;
+      animation: fadeInDown .5s ease both;
+    }
+    .form-success.show { display: block; }
 
     /* ── FOOTER ── */
     footer {
@@ -315,10 +420,43 @@
       text-align: center; padding: 2.5rem 1.5rem;
     }
     .footer-logo { font-size: 1.4rem; color: var(--caramel); margin-bottom: .6rem; }
-    .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin: 1rem 0; }
+    .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin: 1rem 0; flex-wrap: wrap; }
     .footer-links a { color: var(--cream); text-decoration: none; font-size: .9rem; opacity: .7; transition: opacity .2s; }
     .footer-links a:hover { opacity: 1; }
+    .footer-social {
+      display: flex; justify-content: center; gap: 1rem; margin: 1.2rem 0;
+    }
+    .social-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(255,255,255,.08); color: var(--cream);
+      text-decoration: none; font-size: 1.1rem;
+      border: 1px solid rgba(255,255,255,.15);
+      transition: background .25s, transform .2s;
+    }
+    .social-btn:hover {
+      background: var(--caramel);
+      transform: translateY(-3px);
+    }
     .footer-copy { font-size: .82rem; opacity: .5; margin-top: .8rem; }
+
+    /* ── SCROLL TO TOP ── */
+    #scrollTop {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--caramel); color: var(--white);
+      border: none; font-size: 1.2rem; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(200,129,58,.45);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .35s, transform .35s;
+      transform: translateY(12px);
+    }
+    #scrollTop.visible {
+      opacity: 1; pointer-events: auto;
+      transform: translateY(0);
+    }
+    #scrollTop:hover { background: var(--brown-mid); transform: translateY(-3px); }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
@@ -326,6 +464,7 @@
         display: none; flex-direction: column; gap: 1rem;
         position: absolute; top: 100%; left: 0; right: 0;
         background: var(--brown-dark); padding: 1.5rem 2rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,.3);
       }
       .nav-links.open { display: flex; }
       .hamburger { display: flex; }
@@ -334,6 +473,7 @@
       .about-stats { justify-content: center; }
       .btn-outline { margin-left: 0; margin-top: .8rem; }
       .hero-inner .btn { display: block; width: fit-content; margin: .4rem auto; }
+      #scrollTop { bottom: 1.2rem; right: 1.2rem; width: 42px; height: 42px; }
     }
   </style>
 </head>
@@ -364,23 +504,27 @@
       Место, где каждое утро начинается с тепла, аромата<br>
       и маленького сладкого удовольствия.
     </p>
-    <a href="#menu" class="btn btn-primary">Смотреть меню</a>
-    <a href="#contact" class="btn btn-outline">Найти нас</a>
+    <div class="hero-btns">
+      <a href="#menu" class="btn btn-primary">Смотреть меню</a>
+      <a href="#contact" class="btn btn-outline">Найти нас</a>
+    </div>
     <div class="hero-scroll">▼ прокрутите вниз</div>
   </div>
 </section>
 
 <!-- ABOUT -->
 <section id="about">
-  <span class="section-label">Наша история</span>
-  <h2 class="section-title">О компании</h2>
-  <div class="section-divider"></div>
+  <span class="section-label reveal">Наша история</span>
+  <h2 class="section-title reveal">О компании</h2>
+  <div class="section-divider reveal"></div>
   <div class="about-grid">
-    <div class="about-img-wrap">
-      <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80" alt="Интерьер кофейни"/>
+    <div class="about-img-wrap reveal-left">
+      <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80"
+           alt="Интерьер кофейни"
+           loading="lazy"/>
       <div class="about-badge-img"><strong>2018</strong>год<br>основания</div>
     </div>
-    <div class="about-text">
+    <div class="about-text reveal-right">
       <p>
         Всё началось с простой идеи: создать уютное место, где люди могут замедлиться,
         насладиться по-настоящему хорошим кофе и свежеиспечёнными пончиками.
@@ -395,9 +539,18 @@
         людей, которые ценят качество, уют и настоящий вкус.
       </p>
       <div class="about-stats">
-        <div class="stat"><span class="stat-num">6+</span><span class="stat-label">лет работы</span></div>
-        <div class="stat"><span class="stat-num">40+</span><span class="stat-label">сортов кофе</span></div>
-        <div class="stat"><span class="stat-num">12</span><span class="stat-label">видов пончиков</span></div>
+        <div class="stat">
+          <span class="stat-num" data-count="6" data-suffix="+">0</span>
+          <span class="stat-label">лет работы</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" data-count="40" data-suffix="+">0</span>
+          <span class="stat-label">сортов кофе</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" data-count="12" data-suffix="">0</span>
+          <span class="stat-label">видов пончиков</span>
+        </div>
       </div>
     </div>
   </div>
@@ -405,16 +558,17 @@
 
 <!-- MENU -->
 <section id="menu">
-  <span class="section-label">Фирменные напитки</span>
-  <h2 class="section-title">Наше меню</h2>
-  <div class="section-divider"></div>
+  <span class="section-label reveal">Фирменные напитки</span>
+  <h2 class="section-title reveal">Наше меню</h2>
+  <div class="section-divider reveal"></div>
   <div class="menu-grid">
 
-    <div class="menu-card">
+    <div class="menu-card reveal reveal-delay-1">
       <div class="menu-card-img-wrap">
         <img class="menu-card-img"
           src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=600&q=80"
-          alt="Карамельный латте"/>
+          alt="Карамельный латте"
+          loading="lazy"/>
       </div>
       <div class="menu-card-body">
         <span class="menu-card-tag">☕ Горячий</span>
@@ -427,11 +581,12 @@
       </div>
     </div>
 
-    <div class="menu-card">
+    <div class="menu-card reveal reveal-delay-2">
       <div class="menu-card-img-wrap">
         <img class="menu-card-img"
           src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&q=80"
-          alt="Холодный матча"/>
+          alt="Холодный матча"
+          loading="lazy"/>
       </div>
       <div class="menu-card-body">
         <span class="menu-card-tag">🧊 Холодный</span>
@@ -444,11 +599,12 @@
       </div>
     </div>
 
-    <div class="menu-card">
+    <div class="menu-card reveal reveal-delay-3">
       <div class="menu-card-img-wrap">
         <img class="menu-card-img"
           src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=600&q=80"
-          alt="Флэт уайт"/>
+          alt="Флэт уайт"
+          loading="lazy"/>
       </div>
       <div class="menu-card-body">
         <span class="menu-card-tag">☕ Горячий</span>
@@ -461,11 +617,12 @@
       </div>
     </div>
 
-    <div class="menu-card">
+    <div class="menu-card reveal reveal-delay-4">
       <div class="menu-card-img-wrap">
         <img class="menu-card-img"
           src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&q=80"
-          alt="Пончик с кофе"/>
+          alt="Сет два пончика"
+          loading="lazy"/>
       </div>
       <div class="menu-card-body">
         <span class="menu-card-tag">🍩 Фирменное</span>
@@ -483,11 +640,11 @@
 
 <!-- TESTIMONIALS -->
 <section id="testimonials">
-  <span class="section-label">Что говорят гости</span>
-  <h2 class="section-title">Отзывы</h2>
-  <div class="section-divider"></div>
+  <span class="section-label reveal">Что говорят гости</span>
+  <h2 class="section-title reveal" style="color:var(--cream)">Отзывы</h2>
+  <div class="section-divider reveal"></div>
   <div class="testi-grid">
-    <div class="testi-card">
+    <div class="testi-card reveal reveal-delay-1">
       <div class="testi-stars">★★★★★</div>
       <p class="testi-text">«Лучший карамельный латте в городе! Захожу каждое утро по дороге на работу — уже ритуал. Пончики всегда свежие и невероятно вкусные.»</p>
       <div class="testi-author">
@@ -498,7 +655,7 @@
         </div>
       </div>
     </div>
-    <div class="testi-card">
+    <div class="testi-card reveal reveal-delay-2">
       <div class="testi-stars">★★★★★</div>
       <p class="testi-text">«Уютная атмосфера, приветливый персонал и кофе, который хочется пить снова и снова. Сет "Два пончика" — просто находка!»</p>
       <div class="testi-author">
@@ -509,7 +666,7 @@
         </div>
       </div>
     </div>
-    <div class="testi-card">
+    <div class="testi-card reveal reveal-delay-3">
       <div class="testi-stars">★★★★★</div>
       <p class="testi-text">«Наконец-то нашла место, где матча-латте приготовлен правильно. Здесь чувствуется любовь к каждой детали — от зерна до подачи.»</p>
       <div class="testi-author">
@@ -525,11 +682,11 @@
 
 <!-- CONTACT -->
 <section id="contact">
-  <span class="section-label">Мы рядом</span>
-  <h2 class="section-title">Контакты</h2>
-  <div class="section-divider"></div>
+  <span class="section-label reveal">Мы рядом</span>
+  <h2 class="section-title reveal">Контакты</h2>
+  <div class="section-divider reveal"></div>
   <div class="contact-grid">
-    <div class="contact-info">
+    <div class="contact-info reveal-left">
       <h3>Как нас найти</h3>
 
       <div class="contact-item">
@@ -544,7 +701,7 @@
         <div class="contact-icon">📞</div>
         <div class="contact-item-text">
           <strong>Телефон</strong>
-          <span>+7 (495) 123-45-67</span>
+          <span><a href="tel:+74951234567" style="color:inherit;text-decoration:none;">+7 (495) 123-45-67</a></span>
         </div>
       </div>
 
@@ -552,7 +709,7 @@
         <div class="contact-icon">✉️</div>
         <div class="contact-item-text">
           <strong>Email</strong>
-          <span>hello@2donuts.ru</span>
+          <span><a href="mailto:hello@2donuts.ru" style="color:inherit;text-decoration:none;">hello@2donuts.ru</a></span>
         </div>
       </div>
 
@@ -567,23 +724,41 @@
           </table>
         </div>
       </div>
+
+      <!-- Яндекс Карта -->
+      <div class="map-wrap">
+        <iframe
+          src="https://yandex.ru/map-widget/v1/?um=constructor%3A&amp;source=constructor&amp;ll=37.59104,55.74867&amp;z=16&amp;pt=37.59104,55.74867,pm2rdm~37.59104,55.74867,pm2rdl"
+          title="Карта проезда к кофейне"
+          allowfullscreen
+          loading="lazy"
+        ></iframe>
+      </div>
     </div>
 
-    <div class="contact-form">
+    <div class="contact-form reveal-right">
       <h3>Напишите нам</h3>
-      <div class="form-group">
-        <label>Ваше имя</label>
-        <input type="text" placeholder="Иван Иванов"/>
+      <div class="form-success" id="formSuccess">
+        ✅ Сообщение отправлено! Мы свяжемся с вами в ближайшее время. ☕
       </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" placeholder="ivan@example.com"/>
-      </div>
-      <div class="form-group">
-        <label>Сообщение</label>
-        <textarea placeholder="Хочу забронировать столик или задать вопрос..."></textarea>
-      </div>
-      <button class="btn-submit">Отправить сообщение ☕</button>
+      <form id="contactForm" novalidate>
+        <div class="form-group">
+          <label for="fieldName">Ваше имя</label>
+          <input id="fieldName" type="text" placeholder="Иван Иванов" autocomplete="name"/>
+          <span class="error-msg" id="errName">Пожалуйста, введите ваше имя</span>
+        </div>
+        <div class="form-group">
+          <label for="fieldEmail">Email</label>
+          <input id="fieldEmail" type="email" placeholder="ivan@example.com" autocomplete="email"/>
+          <span class="error-msg" id="errEmail">Введите корректный email-адрес</span>
+        </div>
+        <div class="form-group">
+          <label for="fieldMsg">Сообщение</label>
+          <textarea id="fieldMsg" placeholder="Хочу забронировать столик или задать вопрос..."></textarea>
+          <span class="error-msg" id="errMsg">Пожалуйста, напишите сообщение</span>
+        </div>
+        <button type="submit" class="btn-submit" id="btnSubmit">Отправить сообщение ☕</button>
+      </form>
     </div>
   </div>
 </section>
@@ -592,23 +767,167 @@
 <footer>
   <div class="footer-logo">🍩 Два пончика и чашка кофе</div>
   <p style="opacity:.6;font-size:.9rem;">Москва, ул. Арбат, 12</p>
+  <div class="footer-social">
+    <a href="#" class="social-btn" aria-label="Instagram" title="Instagram">📸</a>
+    <a href="#" class="social-btn" aria-label="Telegram" title="Telegram">✈️</a>
+    <a href="#" class="social-btn" aria-label="ВКонтакте" title="ВКонтакте">💬</a>
+    <a href="#" class="social-btn" aria-label="YouTube" title="YouTube">▶️</a>
+  </div>
   <div class="footer-links">
     <a href="#hero">Главная</a>
     <a href="#about">О нас</a>
     <a href="#menu">Меню</a>
+    <a href="#testimonials">Отзывы</a>
     <a href="#contact">Контакты</a>
   </div>
   <p class="footer-copy">© 2024 Два пончика и чашка кофе. Все права защищены.</p>
 </footer>
 
+<!-- Scroll to top button -->
+<button id="scrollTop" aria-label="Наверх" title="Наверх">↑</button>
+
 <script>
+  /* ── HAMBURGER ── */
   function toggleMenu() {
-    document.getElementById('navLinks').classList.toggle('open');
+    const nav = document.getElementById('navLinks');
+    const btn = document.getElementById('hamburger');
+    nav.classList.toggle('open');
+    btn.classList.toggle('active');
   }
-  // close menu on link click
   document.querySelectorAll('.nav-links a').forEach(a => {
     a.addEventListener('click', () => {
       document.getElementById('navLinks').classList.remove('open');
+      document.getElementById('hamburger').classList.remove('active');
+    });
+  });
+
+  /* ── NAV SHRINK ON SCROLL ── */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('shrink', window.scrollY > 60);
+  }, { passive: true });
+
+  /* ── ACTIVE NAV LINK ON SCROLL ── */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => observer.observe(s));
+
+  /* ── SCROLL REVEAL ── */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+    revealObserver.observe(el);
+  });
+
+  /* ── ANIMATED COUNTERS ── */
+  let countersDone = false;
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !countersDone) {
+        countersDone = true;
+        document.querySelectorAll('.stat-num[data-count]').forEach(el => {
+          const target = parseInt(el.dataset.count);
+          const suffix = el.dataset.suffix || '';
+          const duration = 1400;
+          const step = 16;
+          const inc = target / (duration / step);
+          let current = 0;
+          const timer = setInterval(() => {
+            current += inc;
+            if (current >= target) {
+              current = target;
+              clearInterval(timer);
+            }
+            el.textContent = Math.floor(current) + suffix;
+          }, step);
+        });
+        counterObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.5 });
+  const statsBlock = document.querySelector('.about-stats');
+  if (statsBlock) counterObserver.observe(statsBlock);
+
+  /* ── SCROLL TO TOP ── */
+  const scrollTopBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+  scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ── FORM VALIDATION ── */
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let valid = true;
+
+    const name  = document.getElementById('fieldName');
+    const email = document.getElementById('fieldEmail');
+    const msg   = document.getElementById('fieldMsg');
+
+    // Name
+    if (!name.value.trim()) {
+      name.classList.add('error');
+      document.getElementById('errName').classList.add('show');
+      valid = false;
+    } else {
+      name.classList.remove('error');
+      document.getElementById('errName').classList.remove('show');
+    }
+
+    // Email
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRe.test(email.value.trim())) {
+      email.classList.add('error');
+      document.getElementById('errEmail').classList.add('show');
+      valid = false;
+    } else {
+      email.classList.remove('error');
+      document.getElementById('errEmail').classList.remove('show');
+    }
+
+    // Message
+    if (!msg.value.trim()) {
+      msg.classList.add('error');
+      document.getElementById('errMsg').classList.add('show');
+      valid = false;
+    } else {
+      msg.classList.remove('error');
+      document.getElementById('errMsg').classList.remove('show');
+    }
+
+    if (!valid) return;
+
+    // Simulate send
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    btn.textContent = 'Отправляем...';
+    setTimeout(() => {
+      this.style.display = 'none';
+      document.getElementById('formSuccess').classList.add('show');
+    }, 1200);
+  });
+
+  // Clear error on input
+  ['fieldName','fieldEmail','fieldMsg'].forEach(id => {
+    document.getElementById(id).addEventListener('input', function() {
+      this.classList.remove('error');
     });
   });
 </script>
